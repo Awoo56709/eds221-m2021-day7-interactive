@@ -9,14 +9,67 @@ library(tidyverse)
 library(palmerpenguins)
 library(lubridate)
 
+#creating variables and reading in the data
 bird_observations <- read_csv(here::here("data", "52_pp52_birds_1.csv"))
 sites <- read_csv(here::here("data", "52_pp52_sites_1.csv"))
 surveys <- read_csv(here::here("data", "52_pp52_surveys_1.csv"))
 taxalist <- read_csv(here::here("data", "52_pp52_taxalist_1.csv"))
 
+```
+
+```{r}
+# Create a subset of bird_observations called birds_subset that only contains observations for birds with species id “BHCO” and “RWBL”, and from sites with site ID “LI-W” and “NU-C”
 birds_subset <- bird_observations |>
   filter(species_id %in% c("BHCO", "RWBL")) |>
   filter(site_id %in% c("LI-W", "NU-C"))
 
 ```
+
+```{r}
+# Use left join(s) to update birds_subset so that it also includes sites and taxalist information. For each join, include an explicit argument saying which variable you are joining by (even if it will just assume the correct one for you). Store the updated data frame as birds_left. Make sure to look at the output - is what it contains consistent with what you expected it to contain?
+
+birds_left <- birds_subset |>
+  left_join(sites, by = "site_id") |>
+  left_join(taxalist, by = "species_id")
+```
+
+```{r}
+# First, answer: what do you expect a full_join() between birds_subset and sites to contain?
+
+#Write code to full_join the birds_subset and sites data into a new object called birds_full. Explicitly include the variable you’re joining by. Look at the output. Is it what you expected
+
+birds_full <- birds_subset |>
+  full_join(sites, by = "site_id")
+
+
+```
+
+```{r}
+bird_df <- bird_observations |>
+  select(-notes) |>
+  left_join(surveys) |>
+  left_join(sites) |>
+  left_join(taxalist) |>
+  select(survey_date, park_name, common_name, bird_count)
+
+bird_df
+
+```
+
+```{r}
+#add new column 
+
+bird_df <- bird_df |> 
+  mutate(survey_month = lubridate::month(survey_date)) |> 
+  mutate(survey_month = as.factor(survey_month)) |> 
+  relocate(survey_month, .after = survey_date)
+```
+
+```{r}
+bird_df
+ ```
+
+
+
+
 

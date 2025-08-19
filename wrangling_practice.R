@@ -123,3 +123,51 @@ filter(!location %in% sites$location)
 
 
 anti_join(sites, animals)
+
+
+
+
+
+#String manipulating
+
+#practice with lubridate
+
+my_date <- "03-13-1998"
+lubridate::mdy(my_date) #fixed data to iso 8601
+
+#new format based on the format of the date, you use that function
+my_date <- "08-Jun-1974"
+lubridate::dmy(my_date)
+
+#another format
+my_date <- "19160518"
+lubridate::ymd(my_date)
+
+#when it fails.... like a date that doesnt make sense
+#the data is not in the right format for the function
+lubridate::mdy("1942-08-30")
+
+lubridate::dmy("09/12/84")
+
+
+
+#workingh with date times
+
+time <-"2020-08-12 11:18"
+time <- ymd_hm(time)
+#convert to pdt
+with_tz(time, "America/Los_Angeles")
+
+#extract info from the dates
+
+week(time)
+year(time)
+day(time)
+time_length()
+
+
+start_time <- Sys.time()
+
+end_time <- Sys.time()
+
+end_time - start_time

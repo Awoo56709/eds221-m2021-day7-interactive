@@ -1,9 +1,5 @@
 #importing libraries
 
-library(tidyverse)
-library(palmerpenguins)
-library(lubridate)
-rm(list = ls)
 
 #attach tidy
 library(tidyverse)
@@ -19,7 +15,6 @@ penguins %>%
 
 
   # # Load necessary libraries
-  library(dplyr)
 
 # Assuming you have the 'palmerpenguins' dataset
 library(palmerpenguins)
@@ -51,20 +46,80 @@ head(penguins_cleaned)
 
 #creating a summary table of the data and then piping it to .....
 #piping to the filter function for species of Adelie then make sure the flipper legnth is not NA.
-summary_table <- penguins %>%
-  filter(species == "Adelie",!is.n
-           a(flipper_length_mm)) %>%
 
   #next we pipe again for group by based on sex
-  group_by(sex) %>%
+
   #we then summarize function with the mean by means of summarize and create a variable for mean
-  summarise(
+
+  summary_table <- penguins %>%
+  filter(species == "Adelie",!is.na(flipper_length_mm)) %>%
+  group_by(sex) %>%
+  summarise(    #we then also create the standard deveitation by sd function for the flipper length
     mean_flipper = mean(flipper_length_mm),
-    #we then also create the standard deveitation by sd function for the flipper length
     sd_flipper = sd(flipper_length_mm),
-    sample_size = n()
+    n = n()
   )
 #call the summary table
-summary_table
-sample_size
+print(summary_table)
 
+
+
+# New Join stuff
+
+animals <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("lagoon", "bluff", "creek", "oaks", "bluff"),
+           species = c("bobcat", "coyote", "fox", "squirrel", "bobcat"),
+          maturity = c("adult", "juvenile", "adult", "juvenile", "adult")
+)
+
+
+
+sites <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("beach", "lagoon", "bluff", "oaks"),
+    full_site_name = c("Goleta Beach","UCSB Lagoon",
+                       "Ellwood Mesa","Fremont Campground"),
+      jurisdiction = c("SB City", "UCSB", "SB City", "USFS")
+)
+
+#practice with full join
+#kkeeps all rows and adds all columns
+full_join_example <- full_join(animals, sites)
+
+
+#left_join
+left_join(animals,sites)
+
+
+#right_join
+
+right_join(animals, sites)
+
+
+#inner join
+
+inner_join(animals, sites)
+
+
+#filtering joins
+
+semi_join(animals, sites)
+
+#same as
+animals %>%
+  filter(location %in% sites$location)
+
+
+
+#anti join
+
+anti_join(animals, sites)
+
+#same as
+
+animals %>%
+filter(!location %in% sites$location)
+
+
+anti_join(sites, animals)
